@@ -1,0 +1,2 @@
+// This function calculates the offset required to center equally spaced spaced series of "n objects. The objects have a length "x" and gap "g" between neighbouring objects. "l" is the length of the reference line.
+function linearOffset (l, n, x, g) = (l - (n*x + (n-1)*g)) / 2;
