@@ -12,7 +12,7 @@ module carveyWorktop(l, w, h, n, g, tSlotOffset, tSlotDim ) {
     // Calculate the height difference of the T-slot profile and the stock. 
     ztrans = h - (tSlotDim[1]+tSlotDim[3]);
     // Cutting the T-slot groves out of the stock
-    //translate([-l/2, -w/2, 0])
+    translate([-l/2, -w/2, 0])
         difference() {
             aluStock(l, w, h);
             // Move extrusion up to stock surface and centre it along the Y direction
@@ -33,11 +33,11 @@ b = headspace depth
 c = throat width
 d = throat depth
 
-                 
+Cut section diagram of the T-slot. 
 
 +------------+     +-------------+
-|            |<-e->|   Λ         |
-|            |     |   |         |
+|            |     |   Λ         |
+|            |<-e->|   |         |
 |            |     |   d         |
 |            |     |   |         |
 |            |     |   V         |
@@ -71,23 +71,52 @@ d = throat depth
     }
 }
 
-////////////////
-// Wasteboard //
-////////////////
+////////////////////
+//// Wasteboard ////
+////////////////////
 
-// Basic primitive for the wasteboard
+module wasteBoard(l, w, h, mhVar, mhDim, tnhDim){
+    // Finding the largest diameter of the mounting holes
+    D = (mhDim[1] > mhDim[3]) ? mhDim[1] : mhDim[3];
+    // Calculating the offset needed to center the mounting holes above the T-slots  
+    mh_align =(mhVar[4] - D) / 2;
+    // Gap between mounting holes along the X axis that allow the wasteboard to be fastened to the worktop
+    gx = linearGap(l, mhVar[0], D, mhVar[2]);
+    // Gap between mounting holes along the Y axis
+    gy = linearGap(w, mhVar[1], mhVar[4], mhVar[3]);
+    // Centering along the X and Y axes.
+    translate([-l/2, -w/2, 0])
+        difference() {
+            mdfStock(l, w, h);
+            //
+            // Mounting holes
+            //
+            // Align the first hole body to be in x and y positive quadrant and applying offsets
+            translate([D/2 + mhVar[2], D/2 + mhVar[3], 0])
+            // Create the array of mounting holes
+                for (i = [0 : mhVar[0] - 1]) {
+                    for (j = [0 : mhVar[1] - 1]) {
+                        if (mhVar[5] == true) {
+                            if (j == 0 || j == mhVar[1] - 1) {
+                                translate([i * (gx + D), j * (gy + mhVar[4]) + mh_align, 0])
+                                dualDHole(mhDim);
+                            } else{
+                            }
+                        } else {
+                            translate([i * (gx + D), j * (gy + mhVar[4]) + mh_align, 0])
+                            dualDHole(mhDim);
+                        }
+                    }   
+                }
+            //
+            // T-nut holes
+            //
 
-module wasteBoard(l, w, h){
-    //mdfStock(l,w,h);
-
-   tNutHole();
-   translate([20,0,0])
-       mountingHole();
+        }
 
 }
 
-
-module mdfStock( l=tl, w = tw, h = wbh){
+module mdfStock(l, w, h){
     cube([l,w,h]);
 }
 
@@ -95,14 +124,11 @@ module tNutHole(){
     dualDHole(tn_shd,tn_shh,tn_cd,wbh-tn_shh);
 }
 
-module mountingHole(){
-    dualDHole(M_nd,mbh,M_d2,clr+M_k);
-}
-
-
 // The second cylinder is on top of the first.
-module dualDHole(d1,h1,d2,h2){
-    cylinder(h=h1,d=d1);
-    translate([0,0,h1])
-        cylinder(h=h2,d=d2);
+module dualDHole(dim){
+
+// dim = [ d1, h1, d2, h2]
+    cylinder(h=dim[1],d=dim[0]);
+    translate([0,0,dim[1]])
+        cylinder(h=dim[3],d=dim[2]);
 }

@@ -1,13 +1,17 @@
 include<modules.scad>
 
+///////////////////////////
+//// Customisable menu ////
+///////////////////////////
+
 /* [Worktop] */
 
 // Worktop length (mm)
-wl = 300;
+wtl = 300;
 // Worktop width (mm)
-ww = 200;
+wtw = 200;
 // Worktop height (mm)
-wh = 30;
+wth = 30;
 
 /* [T-slot] */
 
@@ -24,17 +28,55 @@ thd = 10; //// [9:1:14]
 // Gap between slots (mm)
 tsg = 20;
 
-groveDim = [hsw, hsd, thw, thd]; 
-
-tso = linearOffset(ww, n_slots, hsw, tsg);  // Corrected offset value so the slots are centred on the worktop
-echo(tso);
 /* [Wasteboard] */
 
+// Wasteboard length (mm)
+wbl = wtl;
+// Wasteboard width (mm)
+wbw = wtw;
+// Wasteboard height (mm)
+wbh = 20;
+// Mounting holes count in X dir
+mh_xn = 3; // [2:5]
+// Mounting hole count in Y dir
+mh_yn = 5; //// [2:2]
+// Plot mounting holes only above outer T-slots
+outerRowsOnly = true;
+// Mounting hole X offset
+mhx_offset = 30;
 
 
 
-carveyWorktop(wl, ww, wh, n_slots, tsg, tso, groveDim);
+//////////////////////////////
+//// Calculated variables ////
+//////////////////////////////
 
-//wasteBoard(tl,tw,wbh);
+//Worktop
+//
+// T-slot dimensions
+groveDim = [hsw, hsd, thw, thd]; 
+// Offset value used to centre the T-slots
+tso = linearOffset(wtw, n_slots, hsw, tsg);
 
+// Wasteboard
+//
+// Mounting hole "Y" offset
+mhy_offset = tso;
 
+// Mounting hole variables
+mountingHoleVar = [mh_xn, mh_yn, mhx_offset, mhy_offset, hsw, outerRowsOnly];
+
+// Mounting hole dimensions
+mountingHoleDim = [M_nd, mbh, M_d2, clr+M_k];
+
+// T-nut hole dimensions
+tNutHoleDim = [tn_shd, tn_shh, tn_cd, wbh-tn_shh]; 
+
+//////////////////////////////
+//// Generating models    ////
+//////////////////////////////
+
+carveyWorktop(wtl, wtw, wth, n_slots, tsg, tso, groveDim);
+
+translate([0,0,wth+1])
+    wasteBoard(wbl, wbw, wbh, mountingHoleVar, mountingHoleDim, tNutHoleDim);

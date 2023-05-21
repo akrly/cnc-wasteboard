@@ -1,6 +1,6 @@
 include<util.scad>
 
-$fn=128;
+$fn=30;
 
 
 ///////////////
