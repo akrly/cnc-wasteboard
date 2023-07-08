@@ -75,7 +75,10 @@ Cut section diagram of the T-slot.
 //// Wasteboard ////
 ////////////////////
 
-module wasteBoard(l, w, h, mhVar, mhDim, tnhDim){
+module wasteBoard(l, w, h, mhVar, mhDim, tnhDim, tnhVar){
+    //////
+    // Variables for mounting holes
+    //////
     // Finding the largest diameter of the mounting holes
     D = (mhDim[1] > mhDim[3]) ? mhDim[1] : mhDim[3];
     // Calculating the offset needed to center the mounting holes above the T-slots  
@@ -85,6 +88,16 @@ module wasteBoard(l, w, h, mhVar, mhDim, tnhDim){
     // Gap between mounting holes along the Y axis
     gy = linearGap(w, mhVar[1], mhVar[4], mhVar[3]);
     // Centering along the X and Y axes.
+    //////
+    // Variables for T-nut holes
+    //////
+    // Finding the largest diameter of the T-nut holes
+    tnD = (tnhDim[0] > tnhDim[2]) ? tnhDim[0] : tnhDim[2];
+    // Offset along X axis
+    tn_xo = linearOffset(l, tnhVar[0], tnD, tnhVar[2]);
+    // Offest along Y axis
+    tn_yo = linearOffset(w, tnhVar[1], tnD, tnhVar[3]);
+
     translate([-l/2, -w/2, 0])
         difference() {
             mdfStock(l, w, h);
@@ -111,9 +124,16 @@ module wasteBoard(l, w, h, mhVar, mhDim, tnhDim){
             //
             // T-nut holes
             //
-
+            // Align the first hole body to be in x and y positive quadrant and applying offsets
+            translate([tnD/2 + tn_xo, tnD/2 + tn_yo, 0])
+            // Create the array of mounting holes
+                for (i = [0 : tnhVar[0] - 1]) {
+                    for (j = [0 : tnhVar[1] - 1]) {
+                            translate([i*(tnD + tnhVar[2]),j*(tnD + tnhVar[3]),0])
+                            dualDHole(tnhDim);
+                        }
+                    }
         }
-
 }
 
 module mdfStock(l, w, h){

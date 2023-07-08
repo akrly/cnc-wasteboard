@@ -6,36 +6,29 @@ include<modules.scad>
 
 /* [Worktop] */
 
-// Worktop length (mm)
-wtl = 300;
-// Worktop width (mm)
-wtw = 200;
-// Worktop height (mm)
-wth = 30;
+// Worktop dimensions ( l,w,h in mm )
+wtdim = [300, 200, 30];
+// Gap between T-slots (mm)
+tsg = 34;
 
-/* [T-slot] */
+/* [T-slot profile] */
 
 // Number of slots
-n_slots = 5;
+n_slots = 4;
 // Headspace width (mm)
-hsw = 17; //// [16:0.1:18] 
+hsw = 16; //// [16:0.1:18] 
 // Headspace depth (mm)
-hsd = 7; //// [7:0.1:8]
+hsd = 8; //// [7:0.1:8]
 // Throat width (mm)
 thw = 10; //// [10:10]
 // Throat depth (mm)
-thd = 10; //// [9:1:14]
-// Gap between slots (mm)
-tsg = 20;
+thd = 8; //// [9:1:14]
 
 /* [Wasteboard] */
 
-// Wasteboard length (mm)
-wbl = wtl;
-// Wasteboard width (mm)
-wbw = wtw;
-// Wasteboard height (mm)
-wbh = 20;
+// Wasteboard dimensions ( l,w,h in mm )
+wbdim = [400, 260, 20];
+
 // Mounting holes count in X dir
 mh_xn = 3; // [2:5]
 // Mounting hole count in Y dir
@@ -43,8 +36,21 @@ mh_yn = 5; //// [2:2]
 // Plot mounting holes only above outer T-slots
 outerRowsOnly = true;
 // Mounting hole X offset
-mhx_offset = 30;
+mhx_offset = 05;
 
+/* [Work in progress] */
+
+tn_xn = 6;
+tn_yn = 5;
+tn_xg = 50;
+tn_yg = 40;
+tn_xo = linearOffset(wbdim[0],tn_xn,0,tn_xg);
+tn_yo = linearOffset(wbdim[1],tn_yn,0,tn_yg);
+
+/* [Objects] */
+
+object_worktop = false;
+object_wasteboard = true;
 
 
 //////////////////////////////
@@ -56,7 +62,7 @@ mhx_offset = 30;
 // T-slot dimensions
 groveDim = [hsw, hsd, thw, thd]; 
 // Offset value used to centre the T-slots
-tso = linearOffset(wtw, n_slots, hsw, tsg);
+tso = linearOffset(wtdim[1], n_slots, hsw, tsg);
 
 // Wasteboard
 //
@@ -70,13 +76,22 @@ mountingHoleVar = [mh_xn, mh_yn, mhx_offset, mhy_offset, hsw, outerRowsOnly];
 mountingHoleDim = [M_nd, mbh, M_d2, clr+M_k];
 
 // T-nut hole dimensions
-tNutHoleDim = [tn_shd, tn_shh, tn_cd, wbh-tn_shh]; 
+//
+tNutHoleDim = [tn_shd, tn_shh, tn_cd, wbdim[2]-tn_shh]; 
 
+// T-nut hole variables
+tNutHoleVar = [tn_xn, tn_yn, tn_xg, tn_yg, tn_xo, tn_yo];
 //////////////////////////////
 //// Generating models    ////
 //////////////////////////////
+if (object_worktop == true) {
+    carveyWorktop(wtdim[0], wtdim[1], wtdim[2], n_slots, tsg, tso, groveDim);
+    if (object_wasteboard == true) {
+        translate([0, 0, wtdim[2] + 1])
+            wasteBoard(wbdim[0], wbdim[1], wbdim[2], mountingHoleVar, mountingHoleDim, tNutHoleDim, tNutHoleVar);
+    }
+}
+else if (object_wasteboard == true) {
+    wasteBoard(wbdim[0], wbdim[1], wbdim[2], mountingHoleVar, mountingHoleDim, tNutHoleDim, tNutHoleVar);
+}
 
-carveyWorktop(wtl, wtw, wth, n_slots, tsg, tso, groveDim);
-
-translate([0,0,wth+1])
-    wasteBoard(wbl, wbw, wbh, mountingHoleVar, mountingHoleDim, tNutHoleDim);

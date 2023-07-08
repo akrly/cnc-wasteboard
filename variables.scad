@@ -1,34 +1,34 @@
 include<util.scad>
 
-$fn=30;
+$fn=8;
 
 
 ///////////////
 // Wasteboard//
 ///////////////
 
-clr = 8; // No metal area
+clr = 5; // No metal area
 
 // Mounting holes to the T slot worktop
-// M6 nuts with TX30 heads are used. Adjust M_d2 and M_k as it might be different. 
+// M8 nuts with TX40 heads are used. Adjust M_d2 and M_k as it might be different. 
 
-M_pitch = 1;   // Pitch size (mm)
-M_nd = 6.0;    // Nominal diameter (mm)
-M_cd = 6.6;    // Clearance drill diameter (mm)
-M_td = 5.0;    // Tap drill diameter (mm)
+M_pitch = 1.25;   // Pitch size (mm)
+M_nd = 8.0;    // Nominal diameter (mm)
+M_cd = 8.4;    // Clearance drill diameter (mm)
+M_td = 9.0;    // Tap drill diameter (mm)
 
-M_d2 = 12;     // Max bolt head diameter (mm)
-M_k = 4.6;     // Max bolt head height (mm)
+M_d2 = 14.5; ///// 12;     // Max bolt head diameter (mm)
+M_k = 5; ///// 4.4;     // Max bolt head height (mm)
 
 
 // Mounting holes for tool holders
 // T-nut dimensions with M4 thread
-
-tn_ch = 7;     // Cylinder height 
-tn_cd = 5;     // Cylinder external diameter
-tn_shh = 0.8;  // Shoulder height
+;
+tn_ch = 6;     // Cylinder height 
+tn_cd = 5.5;     // Cylinder external diameter
+tn_shh = 1.0;  // Shoulder height
 tn_shd = 15;   // Shoulder diameter
 
-wbh = 20; // Wasteboard height
+wbh = 18; // Wasteboard height
 mbh = wbh - (clr + M_k); // Minimum board height.
 
