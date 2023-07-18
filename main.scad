@@ -85,13 +85,13 @@ tNutHoleVar = [tn_xn, tn_yn, tn_xg, tn_yg, tn_xo, tn_yo];
 //// Generating models    ////
 //////////////////////////////
 if (object_worktop == true) {
-    carveyWorktop(wtdim[0], wtdim[1], wtdim[2], n_slots, tsg, tso, groveDim);
+    carveyWorktop(wtdim,, n_slots, tsg, tso, groveDim);
     if (object_wasteboard == true) {
         translate([0, 0, wtdim[2] + 1])
-            wasteBoard(wbdim[0], wbdim[1], wbdim[2], mountingHoleVar, mountingHoleDim, tNutHoleDim, tNutHoleVar);
+            wasteBoard(wbdim, wtdim, mountingHoleVar, mountingHoleDim, tNutHoleDim, tNutHoleVar);
     }
 }
 else if (object_wasteboard == true) {
-    wasteBoard(wbdim[0], wbdim[1], wbdim[2], mountingHoleVar, mountingHoleDim, tNutHoleDim, tNutHoleVar);
+    wasteBoard(wbdim, wtdim, mountingHoleVar, mountingHoleDim, tNutHoleDim, tNutHoleVar);
 }
 

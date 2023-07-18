@@ -1,6 +1,6 @@
 include<util.scad>
 
-$fn=8;
+$fn=10;
 
 
 ///////////////
@@ -29,6 +29,6 @@ tn_cd = 5.5;     // Cylinder external diameter
 tn_shh = 1.0;  // Shoulder height
 tn_shd = 15;   // Shoulder diameter
 
-wbh = 18; // Wasteboard height
+wbh = 20; // Wasteboard height
 mbh = wbh - (clr + M_k); // Minimum board height.
 
